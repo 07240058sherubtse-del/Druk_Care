@@ -1,0 +1,72 @@
+databases:
+  - name: drukcare-db
+    plan: starter
+    databaseName: drukcare
+    user: drukcare
+    region: singapore
+
+services:
+  - type: web
+    name: drukcare-web
+    runtime: node
+    plan: starter
+    region: singapore
+    buildCommand: npm install
+    preDeployCommand: npm run db:migrate && npm run db:seed
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: drukcare-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: BASE_URL
+        sync: false
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_SECURE
+        value: "false"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: SUPPORT_EMAIL
+        sync: false
+  - type: worker
+    name: drukcare-reminders
+    runtime: node
+    plan: starter
+    region: singapore
+    buildCommand: npm install
+    startCommand: npm run worker
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: drukcare-db
+          property: connectionString
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_SECURE
+        value: "false"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: SUPPORT_EMAIL
+        sync: false

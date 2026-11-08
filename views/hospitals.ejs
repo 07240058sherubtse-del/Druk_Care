@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+<section class="page-hero"><div class="container"><span class="eyebrow">Care near you</span><h1>Find hospitals</h1><p>Search verified facility listings across Bhutan.</p></div></section>
+<section class="section-space pt-4"><div class="container">
+  <form class="filter-panel row g-3 align-items-end mb-4" method="get">
+    <div class="col-md-5"><label class="form-label" for="q">Hospital name</label><input id="q" name="q" class="form-control" value="<%= typeof query !== 'undefined' ? query.q : '' %>" placeholder="Search by name"></div>
+    <div class="col-md-5"><label class="form-label" for="dzongkhag">Dzongkhag</label><select class="form-select" id="dzongkhag" name="dzongkhag"><option value="">All Dzongkhags</option><% dzongkhags.forEach((d) => { %><option value="<%= d.id %>" <%= typeof query !== 'undefined' && query.dzongkhag === d.id ? 'selected' : '' %>><%= d.name %></option><% }) %></select></div>
+    <div class="col-md-2 d-grid"><button class="btn btn-primary">Search</button></div>
+  </form>
+  <% if (hospitals.length) { %><div class="row g-4"><% hospitals.forEach((hospital) => { %><div class="col-md-6 col-lg-4"><a class="facility-link" href="/hospitals/<%= hospital.id %>"><article class="card facility-card h-100"><div class="card-body"><div class="facility-icon"><i class="bi bi-hospital"></i></div><span class="small text-teal fw-semibold"><%= hospital.Dzongkhag.name %></span><h2 class="h5 mt-2"><%= hospital.name %></h2><p class="text-secondary"><%= hospital.address || 'Address not provided' %></p><% if (hospital.phone) { %><p><i class="bi bi-telephone me-2"></i><%= hospital.phone %></p><% } %><span class="badge <%= hospital.bookingEnabled ? 'text-bg-success' : 'text-bg-light' %>"><%= hospital.bookingEnabled ? 'Verified online booking' : 'Booking schedule not provided' %></span></div></article></a></div><% }) %></div>
+  <% } else { %><div class="empty-state"><i class="bi bi-search"></i><h2>No verified hospital listings found</h2><p>Try a different search or check back as facility details are verified.</p></div><% } %>
+</div></section>
+<%- include('partials/footer') %>

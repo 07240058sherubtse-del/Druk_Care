@@ -1,0 +1,69 @@
+<%- include('partials/header') %>
+<section class="hero">
+  <div class="container py-5 py-lg-6">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <span class="eyebrow"><i class="bi bi-shield-check me-2"></i>Care, connected across Bhutan</span>
+        <h1 class="display-4 fw-bold mt-3">Your Healthcare,<br><span class="text-teal">Just a Click Away.</span></h1>
+        <p class="lead text-secondary mt-3">Find trusted hospitals, explore medical specialists and book your doctor appointments anywhere in Bhutan with ease.</p>
+        <form class="search-panel row g-2 mt-4" method="get" action="/hospitals">
+          <div class="col-md-5">
+            <label class="form-label small fw-semibold" for="hospitalSearch">Hospital name</label>
+            <input class="form-control form-control-lg" id="hospitalSearch" name="q" placeholder="Search hospitals">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold" for="dzongkhagSearch">Dzongkhag</label>
+            <select class="form-select form-select-lg" id="dzongkhagSearch" name="dzongkhag">
+              <option value="">All Dzongkhags</option>
+              <% dzongkhags.forEach((dzongkhag) => { %><option value="<%= dzongkhag.id %>"><%= dzongkhag.name %></option><% }) %>
+            </select>
+          </div>
+          <div class="col-md-3 d-grid align-self-end"><button class="btn btn-primary btn-lg"><i class="bi bi-search me-2"></i>Find care</button></div>
+        </form>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a class="btn btn-teal btn-lg" href="/doctors">Find a doctor <i class="bi bi-arrow-right ms-2"></i></a>
+          <span class="align-self-center small text-secondary"><i class="bi bi-calendar-check me-1"></i>Book with providers who have verified schedules</span>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="hero-visual">
+          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=85" alt="Healthcare professional speaking with a patient" class="hero-image">
+          <div class="hero-note"><span class="note-icon"><i class="bi bi-heart-pulse"></i></span><div><strong>Care made easier</strong><small>Explore care near you</small></div></div>
+          <div class="hero-shape"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-3 mt-5">
+      <div class="col-4"><div class="stat"><strong><%= hospitalCount %></strong><span>verified hospitals</span></div></div>
+      <div class="col-4"><div class="stat"><strong><%= doctorCount %></strong><span>active doctors</span></div></div>
+      <div class="col-4"><div class="stat"><strong><%= dzongkhags.length %></strong><span>Dzongkhags</span></div></div>
+    </div>
+  </div>
+</section>
+<section class="section-space">
+  <div class="container">
+    <div class="section-heading"><span class="eyebrow">Explore local care</span><h2>Find hospitals by Dzongkhag</h2><p>Search verified hospital listings. Booking is available only where a provider has confirmed its online schedule.</p></div>
+    <div class="district-grid">
+      <% dzongkhags.forEach((dzongkhag) => { %><a class="district-chip" href="/hospitals?dzongkhag=<%= dzongkhag.id %>"><i class="bi bi-geo-alt"></i><%= dzongkhag.name %><i class="bi bi-arrow-up-right ms-auto"></i></a><% }) %>
+    </div>
+  </div>
+</section>
+<section class="section-space bg-soft">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-3 mb-4"><div class="section-heading mb-0"><span class="eyebrow">Trusted care</span><h2>Featured hospitals</h2><p>Hospital profiles are shown after their details have been verified.</p></div><a href="/hospitals" class="btn btn-outline-primary">View all hospitals <i class="bi bi-arrow-right ms-1"></i></a></div>
+    <% if (hospitals.length) { %><div class="row g-4"><% hospitals.forEach((hospital) => { %>
+      <div class="col-md-6 col-lg-4"><a class="facility-link" href="/hospitals/<%= hospital.id %>"><article class="card facility-card h-100"><div class="card-body"><div class="facility-icon"><i class="bi bi-hospital"></i></div><div class="small text-teal fw-semibold"><i class="bi bi-geo-alt me-1"></i><%= hospital.Dzongkhag.name %></div><h3 class="h5 mt-2"><%= hospital.name %></h3><p class="text-secondary mb-3"><%= hospital.address || 'Location details available from the facility.' %></p><span class="badge rounded-pill <%= hospital.bookingEnabled ? 'text-bg-success' : 'text-bg-light' %>"><%= hospital.bookingEnabled ? 'Online booking available' : 'Directory listing' %></span></div></article></a></div>
+    <% }) %></div><% } else { %><div class="empty-state"><i class="bi bi-hospital"></i><h3>Hospital listings are being verified</h3><p>We will publish hospital information once reliable source details have been confirmed.</p></div><% } %>
+  </div>
+</section>
+<section id="departments" class="section-space">
+  <div class="container"><div class="section-heading"><span class="eyebrow">Care by specialty</span><h2>Browse medical departments</h2><p>Explore specialties and find the care that is right for you.</p></div>
+    <div class="row g-3"><% departments.forEach((department) => { %><div class="col-6 col-md-4 col-lg-3"><a class="department-card" href="/doctors?department=<%= department.id %>"><span><i class="bi bi-clipboard2-pulse"></i></span><strong><%= department.name %></strong><i class="bi bi-arrow-up-right ms-auto"></i></a></div><% }) %></div>
+  </div>
+</section>
+<section id="about" class="section-space bg-navy text-white">
+  <div class="container"><div class="row align-items-center g-5"><div class="col-lg-6"><span class="eyebrow eyebrow-light">How DrukCare works</span><h2 class="display-6 fw-bold mt-3">A simpler way to plan your care.</h2><p class="text-white-50 mt-3">Discover verified providers, check published availability and manage your appointments in one place.</p></div><div class="col-lg-6"><div class="steps"><div class="step"><span>01</span><div><h3>Find a provider</h3><p>Search hospitals and doctors by location or specialty.</p></div></div><div class="step"><span>02</span><div><h3>Choose a time</h3><p>See available slots only when online booking is enabled.</p></div></div><div class="step"><span>03</span><div><h3>Manage your visit</h3><p>Receive a reference and manage appointments from your account.</p></div></div></div></div></div>
+  </div>
+</section>
+<section class="section-space"><div class="container"><div class="cta-panel"><div><span class="eyebrow">Take the next step</span><h2 class="mb-2">Your care journey starts here.</h2><p class="mb-0 text-secondary">Browse providers and discover online booking availability.</p></div><a class="btn btn-primary btn-lg" href="/doctors">Find a doctor <i class="bi bi-arrow-right ms-2"></i></a></div></div></section>
+<%- include('partials/footer') %>
